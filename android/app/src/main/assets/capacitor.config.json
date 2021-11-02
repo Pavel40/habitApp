@@ -1,6 +1,6 @@
 {
 	"appId": "io.ionic.starter",
-	"appName": "habitApp",
+	"appName": "Habit",
 	"webDir": "build",
 	"bundledWebRuntime": false
 }
