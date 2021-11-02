@@ -1,5 +1,7 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import Goal from '../components/Goal';
+import Percentage from '../components/Percentage';
+import Info from '../components/Info';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -7,16 +9,13 @@ const Home: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Blank</IonTitle>
+          <IonTitle>Habit Tracker</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Blank</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        <ExploreContainer />
+        <Goal />
+        <Percentage />
+        <Info />
       </IonContent>
     </IonPage>
   );
