@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { IonButton } from '@ionic/react';
+import { IonButton, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { Storage } from '@ionic/storage';
 import './Percentage.css';
 
@@ -7,25 +7,28 @@ const store = new Storage();
 
 const Percentage: React.FC = () => {
   const [percentage, setPercentage] = useState('%');
+  const [successful, setSuccessful] = useState('');
+  const [failed, setFailed] = useState('');
 
   async function countPercentage(store: Storage, addToSuccess = 0) {
-    const successful = await store.get('success');
-    const failed = await store.get('fail');
-    console.log(successful, failed);
+    let successful = await store.get('success');
+    let failed = await store.get('fail');
     if (!successful && !failed) {
       setPercentage('100 %');
-      await store.set('success', 1); // I set both to 1, because 0 would lead to zero division error
+      await store.set('success', 1);
       await store.set('fail', 0);
+      successful = 1;
+      failed = 0;
     } else {
       let newPercentage = successful / (successful + failed);
       newPercentage = Math.round(newPercentage * 100);
       setPercentage(`${newPercentage} %`);
-      console.log(successful);
-      console.log(failed);
       if (addToSuccess > 0) {
         await store.set('success', successful + addToSuccess);
       }
     }
+    setSuccessful(successful);
+    setFailed(failed);
   }
 
   useEffect(() => {
@@ -45,15 +48,11 @@ const Percentage: React.FC = () => {
       streak = streak / 60; // hours
       streak = streak / 24; // days
 
-      let streakFromStore = await store.get('streak');
-      if (!streakFromStore) {
-        await store.set('streak', streak);
-        streakFromStore = streak;
-      }
-
       let addToSuccess = 0;
       if (streak > 1) {
         addToSuccess = Math.round(streak);
+        const start = Date.now();
+        await store.set('start', start);
       }
 
       await countPercentage(store, addToSuccess);
@@ -69,8 +68,21 @@ const Percentage: React.FC = () => {
 
   return (
     <>
-      <h3>Success percentage:</h3>
-      <p className="percentage">{percentage}</p>
+      <IonGrid>
+        <IonRow>
+          <IonCol>
+            <h3>Success percentage:</h3>
+            <p className="percentage">{percentage}</p>
+          </IonCol>
+          <IonCol>
+            <h3>Stats:</h3>
+            <p className="stats">
+              Successful: {successful}<br />
+              Failed: {failed}
+            </p>
+          </IonCol>
+        </IonRow>
+      </IonGrid>
       <IonButton color="danger" expand="block" className="ion-margin" onClick={oopsie}>
         Oopsie
       </IonButton>
